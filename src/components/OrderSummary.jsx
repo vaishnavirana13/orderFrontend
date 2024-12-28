@@ -1,30 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { supabase } from '../supabaseClient'; // Adjust path as needed for your project structure
+import { supabase } from '../supabaseClient'; 
 import './styles/OrderSummary.css';
 
 const OrderSummary = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Get the location object to access passed state
-  const { cart } = location.state || {}; // Retrieve cart from state passed via navigate
-  const [selectedProducts, setSelectedProducts] = useState([]); // Track selected products
+  const location = useLocation();
+  const { cart } = location.state || {};
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [orderSubmitted, setOrderSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [showPopup, setShowPopup] = useState(false);
-  const [customer, setCustomer] = useState(null); // Track customer details
+  const [customer, setCustomer] = useState(null);
 
-  // Fetch customer details (using a dummy customer ID of 1)
+ 
   useEffect(() => {
     const fetchCustomerDetails = async () => {
-      const userId = 2; // Use a valid user ID from the customer table (e.g., userId = 2)
+      const userId = 2; 
 
       try {
         const { data, error } = await supabase
           .from('customers')
           .select('id, customer_name, email')
-          .eq('id', userId); // Ensure this ID matches one of the IDs in your API data
+          .eq('id', userId); 
 
-        console.log('Supabase fetch result:', data); // Log the result to the console for debugging
+        console.log('Supabase fetch result:', data);
         if (error) {
           console.error('Error fetching customer details:', error);
           setError('Error fetching customer details.');
@@ -32,7 +32,7 @@ const OrderSummary = () => {
         }
 
         if (data.length > 0) {
-          setCustomer(data[0]); // Store customer data if found
+          setCustomer(data[0]);
         } else {
           setError('Customer not found.');
         }
@@ -43,26 +43,26 @@ const OrderSummary = () => {
     };
 
     fetchCustomerDetails();
-  }, []); // Empty array to run once when the component mounts
+  }, []);
 
-  // Handle product selection for the order
+  
   const handleSelectProduct = (productId) => {
     setSelectedProducts((prevSelected) =>
       prevSelected.includes(productId)
-        ? prevSelected.filter((id) => id !== productId) // Deselect if already selected
-        : [...prevSelected, productId] // Select if not selected
+        ? prevSelected.filter((id) => id !== productId) 
+        : [...prevSelected, productId]
     );
   };
 
-  // Handle cancel order (navigate to home or cart)
+  
   const handleCancel = () => {
-    navigate('/'); // Navigate back to the home page or cart page
+    navigate('/');
   };
 
-  // Handle order submission
+ 
   const handleSubmit = async () => {
     if (selectedProducts.length === 0) {
-      setShowPopup(true); // Show a popup if no product is selected
+      setShowPopup(true);
       return;
     }
 
@@ -71,19 +71,19 @@ const OrderSummary = () => {
       return;
     }
 
-    // Provide customer details and current time
+   
     const customerId = customer.id;
     const customerName = customer.customer_name;
     const customerEmail = customer.email;
-    const createdAt = new Date().toISOString(); // Ensure created_at is in ISO format
+    const createdAt = new Date().toISOString();
 
     try {
-      // Insert order into 'orders' table with customer_id
+    
       const { data: orderData, error: orderError } = await supabase.from('orders').insert([{
-        orderdescription: 'New Order', // Default description, modify as needed
-        created_at: createdAt,  // Ensure this matches your column name
-        customer_id: customerId,  // Ensure this matches the exact column name in your DB schema
-      }]).select('id');  // Return the id of the newly inserted order
+        orderdescription: 'New Order', 
+        created_at: createdAt,  
+        customer_id: customerId, 
+      }]).select('id');
 
       if (orderError) {
         console.error('Error submitting order:', orderError);
@@ -91,18 +91,18 @@ const OrderSummary = () => {
         return;
       }
 
-      const orderId = orderData[0].id; // Get the order id after insertion
+      const orderId = orderData[0].id;
 
-      // Now insert into 'orderproductmap' to link products with the order
+      
       const orderProductMapInserts = selectedProducts.map(async (productId) => {
-        const product = cart.find((item) => item.id === productId); // Find the product by id
+        const product = cart.find((item) => item.id === productId);
         if (product) {
-          const { id, quantity } = product; // Retrieve the product details
-          // Insert into the 'orderproductmap' table to link the order with the product
+          const { id, quantity } = product; 
+          
           const { error: linkError } = await supabase.from('orderproductmap').insert([{
-            order_id: orderId, // Link the order to the orderproductmap
-            product_id: id, // Link the product to the orderproductmap
-            quantity, // Include the quantity
+            order_id: orderId,
+            product_id: id,
+            quantity,
           }]);
 
           if (linkError) {
@@ -113,13 +113,13 @@ const OrderSummary = () => {
         }
       });
 
-      // Wait for all products to be linked to the order
+     
       await Promise.all(orderProductMapInserts);
 
       setOrderSubmitted(true);
       setTimeout(() => {
         alert('Order submitted successfully!');
-        navigate('/'); // Navigate to the home or cart page after submission
+        navigate('/');
       }, 1000);
     } catch (err) {
       console.error('Unexpected error submitting order:', err);
@@ -127,7 +127,7 @@ const OrderSummary = () => {
     }
   };
 
-  // Handle closing the popup
+ 
   const closePopup = () => {
     setShowPopup(false);
   };
@@ -145,7 +145,7 @@ const OrderSummary = () => {
           {cart.map((product) => (
             <div className="productDetailOuter" key={product.id}>
               <div className="productDetailInner">
-                {/* Show selected product details when the product is checked */}
+               
                 {selectedProducts.includes(product.id) && (
                   <div className="selected-product-details">
                     <h4>Selected Product Details</h4>
@@ -180,7 +180,7 @@ const OrderSummary = () => {
         </button>
       </div>
 
-      {/* Sidebar with images */}
+     
       <div className="sidebar">
         {selectedProducts.length === 0 ? (
           <img
@@ -197,7 +197,7 @@ const OrderSummary = () => {
         )}
       </div>
 
-      {/* Popup for no item selected */}
+     
       {showPopup && (
         <div className="popup-overlay">
           <div className="popup-content">
@@ -214,7 +214,7 @@ const OrderSummary = () => {
         </div>
       )}
 
-      {/* Button to redirect to the Order List */}
+     
       <div className="order-list-button-container">
         <button
           className="go-to-order-list-button"

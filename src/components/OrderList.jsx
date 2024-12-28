@@ -9,7 +9,7 @@ const OrdersList = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('https://order-backend-z7sy.vercel.app/api/orders'); // Backend endpoint
+        const response = await fetch('https://order-backend-z7sy.vercel.app/api/orders');
         if (!response.ok) {
           throw new Error('Failed to fetch orders');
         }
@@ -42,7 +42,7 @@ const OrdersList = () => {
             <tr>
             
               <th>Created At</th>
-              <th>Action</th> {/* For future actions like view/edit */}
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -51,7 +51,7 @@ const OrdersList = () => {
              
                 <td>{new Date(order.created_at).toLocaleString()}</td>
                 <td>
-                  {/* Add buttons for possible actions */}
+                
                   <button className="view-button">View</button>
                   <button className="edit-button">Edit</button>
                 </td>

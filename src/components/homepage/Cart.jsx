@@ -1,5 +1,5 @@
 import React, { useState, forwardRef } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom'; 
 import '../styles/Home.css';
 
 const Cart = forwardRef(
@@ -11,35 +11,35 @@ const Cart = forwardRef(
     productImagesArray, 
   }, ref) => {
 
-    const [bouncingImageId, setBouncingImageId] = useState(null); // State for bounce animation
-    const navigate = useNavigate(); // Initialize useNavigate hook
+    const [bouncingImageId, setBouncingImageId] = useState(null); 
+    const navigate = useNavigate();
 
-    // Function to handle increment of quantity and trigger bounce animation
+    
     const handleIncrementWithBounce = (itemId) => {
-      handleIncrement(itemId); // Increment the item quantity
-      setBouncingImageId(itemId); // Trigger the bounce animation
+      handleIncrement(itemId); 
+      setBouncingImageId(itemId);
 
-      // Reset the bounce animation after 0.5s (duration of animation)
+     
       setTimeout(() => {
         setBouncingImageId(null);
-      }, 500); // Match this duration with your CSS animation duration
+      }, 500); 
     };
 
-    // Function to handle decrement of quantity and trigger bounce animation
+    
     const handleDecrementWithBounce = (itemId) => {
-      handleDecrement(itemId); // Decrement the item quantity
-      setBouncingImageId(itemId); // Trigger the bounce animation
+      handleDecrement(itemId);
+      setBouncingImageId(itemId); 
 
-      // Reset the bounce animation after 0.5s (duration of animation)
+      
       setTimeout(() => {
         setBouncingImageId(null);
-      }, 500); // Match this duration with your CSS animation duration
+      }, 500); 
     };
 
-    // Function to handle proceed button click and redirect to the order-summary page
+    
     const handleProceed = () => {
       if (cart.length > 0) {
-        // Only navigate if cart has items
+      
         navigate('/order-summary', { state: { cart } });
       } else {
         alert("Your cart is empty. Add items to proceed.");
@@ -66,7 +66,7 @@ const Cart = forwardRef(
                 </thead>
                 <tbody>
                   {cart.map((item) => {
-                    // Get the image from productImagesArray using the product.id
+                   
                     const imageSrc = productImagesArray[item.id] ? `/${productImagesArray[item.id][0]}` : null;
 
                     return (
@@ -76,14 +76,14 @@ const Cart = forwardRef(
                         <td className="quantdata">
                           <button
                             className="incredecre"
-                            onClick={() => handleDecrementWithBounce(item.id)} // Decrement with bounce
+                            onClick={() => handleDecrementWithBounce(item.id)} 
                           >
                             -
                           </button>
                           {item.quantity}
                           <button
                             className="incredecre"
-                            onClick={() => handleIncrementWithBounce(item.id)} // Increment with bounce
+                            onClick={() => handleIncrementWithBounce(item.id)} 
                           >
                             +
                           </button>
@@ -95,20 +95,20 @@ const Cart = forwardRef(
                             {imageSrc && item.quantity > 0 && (
                               <>
                                 {Array.from({ length: Math.min(item.quantity, 3) }).map((_, index) => {
-                                  // Applying tilt effects based on index
+                                  
                                   let tiltClass = '';
                                   if (index === 1) {
-                                    tiltClass = 'tilt-left';  // Second image tilts left
+                                    tiltClass = 'tilt-left';  
                                   } else if (index === 2) {
-                                    tiltClass = 'tilt-right'; // Third image tilts right
+                                    tiltClass = 'tilt-right'; 
                                   }
 
                                   return (
                                     <img
                                       key={index}
-                                      src={imageSrc} // Use the correct image path
+                                      src={imageSrc} 
                                       alt={`product-image-${item.id}-${index}`}
-                                      className={`stacked-image ${bouncingImageId === item.id ? 'bounce-animation' : ''} ${tiltClass}`} // Apply tilt class based on index
+                                      className={`stacked-image ${bouncingImageId === item.id ? 'bounce-animation' : ''} ${tiltClass}`} 
                                     />
                                   );
                                 })}

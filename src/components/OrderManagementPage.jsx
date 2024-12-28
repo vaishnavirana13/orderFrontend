@@ -9,7 +9,7 @@ const OrderManagementPage = () => {
     <div className="order-management-container">
       <h1>Order Management</h1>
 
-      {/* Display customer details */}
+    
       <div className="customer-details">
         {customerDetails && customerDetails.name ? (
           <>
