@@ -9,7 +9,7 @@ const OrdersList = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/orders'); // Backend endpoint
+        const response = await fetch('https://order-backend-z7sy.vercel.app/api/orders'); // Backend endpoint
         if (!response.ok) {
           throw new Error('Failed to fetch orders');
         }
